@@ -1,7 +1,7 @@
 /*
- * Library for two MAX72xx LED displays drivers
- * Functionality is limited for exactly two MAX72xx, 7-segment displays only.
- * PINs are hardcoded (spi0 wth GP5, GP17, GP18 and GP19)
+ * Library for three MAX7221 LED displays drivers
+ * Functionality is limited for exactly three MAX7221, 7-segment displays only.
+ * PINs are hardcoded (spi1 wth GP9, GP10, GP11, GP13 and GP25)
  */
 
 #include <math.h>
@@ -11,7 +11,7 @@
 #include "pico/stdlib.h"
 #include "pico/binary_info.h"
 
-#include "max7219.h"
+#include "max7221.h"
 
 void cs_select(uint8_t chip) {
     asm volatile("nop \n nop \n nop");
@@ -19,6 +19,8 @@ void cs_select(uint8_t chip) {
         gpio_put(PIN_CS1, 0); // Active low
     else if(chip == 1)
         gpio_put(PIN_CS2, 0);
+    else if(chip == 2)
+        gpio_put(PIN_CS3, 0);
     else
         return;
     asm volatile("nop \n nop \n nop");
@@ -30,6 +32,8 @@ void cs_deselect(uint8_t chip) {
         gpio_put(PIN_CS1, 1);
     else if(chip == 1)
         gpio_put(PIN_CS2, 1);
+    else if(chip == 2)
+        gpio_put(PIN_CS3, 1);
     else
         return;
     asm volatile("nop \n nop \n nop");
@@ -46,7 +50,7 @@ void spi_send_data(uint8_t chip, uint8_t address, uint8_t data) {
     cs_deselect(chip);
 }
 
-void max7219_init() {
+void max7221_init() {
     spi_init(SPI_PORT, SPI_BAUDRATE);
     gpio_set_function(PIN_SCK, GPIO_FUNC_SPI);
     gpio_set_function(PIN_MOSI, GPIO_FUNC_SPI);
@@ -55,13 +59,16 @@ void max7219_init() {
     gpio_init(PIN_CS1);
     gpio_set_dir(PIN_CS1, GPIO_OUT);
     gpio_put(PIN_CS1, 1);
-    bi_decl(bi_1pin_with_name(PIN_CS1, "SPI CS")); // 1st MAX7219 CS pin
+    bi_decl(bi_1pin_with_name(PIN_CS1, "SPI CS")); // 1st MAX7221 CS pin
     gpio_init(PIN_CS2);
     gpio_set_dir(PIN_CS2, GPIO_OUT);
-    bi_decl(bi_1pin_with_name(PIN_CS2, "SPI CS")); // 2nd MAX7219 CS pin (yes, we don't use cascading)
+    bi_decl(bi_1pin_with_name(PIN_CS2, "SPI CS")); // 2nd MAX7221 CS pin
+    gpio_init(PIN_CS3);
+    gpio_set_dir(PIN_CS3, GPIO_OUT);
+    bi_decl(bi_1pin_with_name(PIN_CS3, "SPI CS")); // 3rd MAX7221 CS pin
 
-    // Init both MAX72xx
-    for (register uint8_t i = 0; i < 2; i++) {
+    // Init all MAX7221s
+    for (register uint8_t i = 0; i < 3; i++) {
         sleep_ms(100);
         spi_send_data(i, REG_DISPLAYTEST, 0x00);
         // Set max intensity

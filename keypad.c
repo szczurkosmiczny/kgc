@@ -10,7 +10,7 @@
 #include "hardware/gpio.h"
 
 #include "keypad.h"
-#include "max7219.h"
+#include "max7221.h"
 #include "led.h"
 
 uint8_t keypad_status = 0, verb = 0, prev_verb = 0, noun = 0, prev_noun = 0, request_num = NO_NUM_TO_READ, change_register;
@@ -22,14 +22,22 @@ bool debounce = false;
 
 // Init function for keypad
 void keypad_init() {
-    for(register uint8_t i = 0; i < 4; i++) {
+    // Column pins init
+    for(register uint8_t i = 0; i < 7; i++) {
         gpio_init(col[i]);
+        gpio_set_dir(col[i], GPIO_OUT); // Column pins are output
+        gpio_put(col[i], 1); // We're going to set all column pins to 1 to be able to detect a keystroke
+    }
+
+    // Row pins init
+    for(register uint8_t i = 0; i < 3; i++) {
         gpio_init(row[i]);
+        gpio_set_dir(row[i], GPIO_IN); // Row pins are input
+    }
 
-        gpio_set_dir(col[i], GPIO_IN); // Column pins are input
-        gpio_set_dir(row[i], GPIO_OUT); // Row pins are output
-
-        gpio_put(row[i], 1); // We're going to set all row pins to 1 to be able to detect a keystroke
+    gpio_set_irq_enabled_with_callback(row[0], GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &keypad_irq_handler);
+    for(register uint8_t i = 1; i < 3; i++) {
+        gpio_set_irq_enabled(row[i], GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
     }
 }
 
@@ -251,35 +259,34 @@ void keypad_irq_handler(uint gpio, uint32_t events) {
     if (debounce == true)
         return; // Still debouncing
     else {
-        // We're going to set all row pins to 0
-        for (register uint8_t i = 0; i < 4; i++)
-            gpio_put(row[i], 0);
+        // We're going to set all column pins to 0
+        for (register uint8_t i = 0; i < 7; i++)
+            gpio_put(col[i], 0);
 
-        // Then we gonna test row by row to find pressed key
-        for (register uint8_t i = 0; i < 4; i++) {
-            gpio_put(row[i], 1);
-            for (register uint8_t j = 0; j < 4; j++) {
-                if (gpio_get(col[j])) {
-                    while (gpio_get(col[j])) {
+        // Then we gonna test column by column to find pressed key
+        for (register uint8_t i = 0; i < 7; i++) {
+            gpio_put(col[i], 1);
+            for (register uint8_t j = 0; j < 3; j++) {
+                if (gpio_get(row[j])) {
+                    while (gpio_get(row[j])) {
                         // Do nothing while key is pressed
                     }
 
                     // Then evaluate key meaning
-                    // If there's request to insert number
-                    // keypad_status = (request_num == NO_NUM_TO_READ) ? key_evaluate(keymap[i][j]) : read_number(keymap[i][j]);
                     if((request_num == NO_NUM_TO_READ) || (request_num == READ_NUM_INSERTED))
                         keypad_status = key_evaluate(keymap[i][j]);
+                    // If there's request to insert number
                     else
                         keypad_status = read_number(keymap[i][j]);
                     debounce = true;
                     add_alarm_in_ms(50, debounce_unset, NULL, false);
                 }
             }
-            gpio_put(row[i], 0);
+            gpio_put(col[i], 0);
         }
 
-        for (register uint8_t i = 0; i < 4; i++)
-            gpio_put(row[i], 1); // Set all row pins to 1 to be able to detect a keystroke
+        for (register uint8_t i = 0; i < 7; i++)
+            gpio_put(col[i], 1); // Set all column pins to 1 to be able to detect a keystroke
     }
 }
 

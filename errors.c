@@ -1,7 +1,7 @@
 #include "pico/stdlib.h"
 
 #include "errors.h"
-#include "max7219.h"
+#include "max7221.h"
 
 
 void display_err_code(uint16_t err_code) {

@@ -3,11 +3,14 @@
 
 #define KEY_VERB 10
 #define KEY_NOUN 11
-#define KEY_CLR 
+#define KEY_CLR 16
 #define KEY_MINUS 45
 #define KEY_DOT 46
 #define KEY_ENTER 15
 #define KEY_PROCEED 12
+#define KEY_RSET 13
+#define KEY_ALRM 14
+#define KEY_UNDEF 254
 
 #define KEY_STAT_NO_CHANGE 0
 #define KEY_STAT_PRG_CHANGE 1
@@ -29,11 +32,10 @@
     }
 
 extern uint8_t keypad_status, verb, prev_verb, noun, prev_noun;
-static uint8_t col[4] = {28, 27, 26, 22}, row[4] = {21, 20, 16, 15};
-static uint8_t keymap[4][4] = {{1,  2, 3,  10},     // 1, 2, 3, Verb
-                               {4,  5, 6,  11},     // 4, 5, 6, Noun
-                               {7,  8, 9,  12},     // 7, 8, 9, CLR
-                               {45, 0, 46, 15}};    // -, 0, ., Enter 
+static uint8_t col[7] = {28, 27, 26, 24, 23, 22, 21}, row[3] = {29, 30, 31};
+static uint8_t keymap[3][7] = {{KEY_VERB,  KEY_MINUS, 7, 8, 9, KEY_CLR,     KEY_ENTER},
+                               {KEY_NOUN,  KEY_DOT,   4, 5, 6, KEY_PROCEED, KEY_ALRM},
+                               {KEY_UNDEF, 0,         1, 2, 3, KEY_RSET,    KEY_UNDEF}};
 
 void keypad_init();
 int64_t debounce_unset(alarm_id_t id, void *user_data);

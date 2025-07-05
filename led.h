@@ -1,18 +1,18 @@
 #ifndef KGC_LED_H
 #define KGC_LED_H
 
-#define LED_CNT 10
-#define LED_CON 2
-#define LED_FLD 3
-#define LED_ELC 7
-#define LED_MOP 9
-#define LED_LFO 8
-#define LED_OTR 10
-#define LED_SAS 6
-#define LED_RCS 11
-#define LED_GEA 4
-#define LED_BRK 12
-#define BUZZ    14
+#define LED_CNT 10 // Number of LEDs
+#define LED_CON 42
+#define LED_FLD 16
+#define LED_ELC 34
+#define LED_MOP 17
+#define LED_LFO 40
+#define LED_OTR 18
+#define LED_SAS 39
+#define LED_RCS 19
+#define LED_GEA 38
+#define LED_BRK 20
+#define BUZZ    47
 
 #define LED_STAT_CON 0
 #define LED_STAT_FLD 1

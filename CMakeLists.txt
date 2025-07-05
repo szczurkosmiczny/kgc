@@ -23,7 +23,7 @@ if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
-set(PICO_BOARD pico CACHE STRING "Board type")
+set(PICO_BOARD pico2 CACHE STRING "Board type")
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(kgc kgc.c max7219.h max7219.c keypad.h keypad.c connection.h connection.c led.h led.c errors.h errors.c)
+add_executable(kgc kgc.c max7221.h max7221.c keypad.h keypad.c connection.h connection.c led.h led.c errors.h errors.c)
 
 pico_set_program_name(kgc "kgc")
 pico_set_program_version(kgc "0.4.1")

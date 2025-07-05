@@ -1,11 +1,12 @@
-#ifndef KGC_MAX7219_H
-#define KGC_MAX7219_H
+#ifndef KGC_MAX7221_H
+#define KGC_MAX7221_H
 
-#define PIN_MOSI 19 // DIN
-#define PIN_SCK 18 // CLK
-#define PIN_CS1 17 // LOAD (CS)
-#define PIN_CS2 5 // LOAD (CS)
-#define SPI_PORT spi0
+#define PIN_MOSI 11 // DIN
+#define PIN_SCK 10  // CLK
+#define PIN_CS1 25  // SS1
+#define PIN_CS2 13  // SS2
+#define PIN_CS3 9   // SS3
+#define SPI_PORT spi1
 #define SPI_BAUDRATE 9600
 
 #define REG_NOOP        0x00
@@ -37,7 +38,7 @@ static uint8_t code_table[] = {0x7E, 0x30, 0x6D, 0x79,     // 0,  1,  2,  3
 void cs_select(uint8_t chip);
 void cs_deselect(uint8_t chip);
 void spi_send_data(uint8_t chip, uint8_t address, uint8_t data);
-void max7219_init();
+void max7221_init();
 void clear_display(uint8_t chip, uint8_t display);
 uint16_t dec2bin(uint8_t n);
 void display_number(uint8_t chip,uint8_t display, int64_t number);
@@ -46,4 +47,4 @@ void display_float_number(uint8_t chip, uint8_t display, float number);
 void welcome_message_print();
 void display_underscores(uint8_t chip, uint8_t display);
 
-#endif //KGC_MAX7219_H
+#endif //KGC_MAX7221_H

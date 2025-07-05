@@ -7,7 +7,7 @@
 
 #include "led.h"
 #include "keypad.h"
-#include "max7219.h"
+#include "max7221.h"
 
 bool led_stat[12] = {0};
 bool blink_stat = 0;

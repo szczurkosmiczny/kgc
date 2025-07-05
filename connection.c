@@ -9,7 +9,7 @@
 #include "hardware/uart.h"
 
 #include "connection.h"
-#include "max7219.h"
+#include "max7221.h"
 #include "led.h"
 
 char uart_str_in[UART_STR_IN_BUF_SIZE] = "";

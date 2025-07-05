@@ -271,6 +271,8 @@ TODO
 | 1                | 1            | 1        | 1                    | 15  |
 
 ## Error codes
+### Node creation:
+- 1202: Node creation program wasn't initialized
 ### Ascent guidance:
 - 1301: Noun doesn't exist
 - 1302: Autopilot wasn't initialized

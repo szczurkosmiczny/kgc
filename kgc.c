@@ -12,7 +12,7 @@
 #include "hardware/irq.h"
 #include "hardware/watchdog.h"
 
-#include "max7219.h"
+#include "max7221.h"
 #include "keypad.h"
 #include "connection.h"
 #include "led.h"
@@ -298,7 +298,7 @@ int main() {
     // Peripherals init
     keypad_init();
     led_init();
-    max7219_init();
+    max7221_init();
     spi_send_data(0, REG_SHUTDOWN, 0x01);
     spi_send_data(1, REG_SHUTDOWN, 0x01);
     // Connection with server init
@@ -319,11 +319,6 @@ int main() {
     // Timer for periodical sending data via UART init
     struct repeating_timer timer_uart_send;
     add_repeating_timer_ms(UART_SEND_PERIOD_MS, timer_uart_send_handler, NULL, &timer_uart_send);
-
-    gpio_set_irq_enabled_with_callback(col[0], GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &keypad_irq_handler);
-    for(register uint8_t i = 1; i < 4; i++) {
-        gpio_set_irq_enabled(col[i], GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
-    }
 
     gpio_put(LED_CON, true);
     
